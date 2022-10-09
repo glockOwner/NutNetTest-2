@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PerformerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,4 +17,15 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::group(['controller' => PerformerController::class, 'prefix' => '/performers'], function () {
+    Route::get('', 'index')->name('performers.index');
+    Route::group(['middleware' => 'is_auth'], function () {
+        Route::get('/create', 'create')->name('performers.create');
+        Route::post('/store', 'store')->name('performers.store');
+        Route::get('/edit/{performerId}', 'edit')->name('performers.edit');
+        Route::patch('/update/{performerId}', 'update')->name('performers.update');
+        Route::delete('/delete/{performerId}', 'delete')->name('performers.delete');
+    });
+});
