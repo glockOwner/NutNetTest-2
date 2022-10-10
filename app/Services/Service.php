@@ -34,7 +34,7 @@ class Service
         if ($request->hasFile($fileKey) && !(Storage::exists("upload/{$request->file($fileKey)->getClientOriginalName()}"))) {
             $data['img_path'] = $request->$fileKey->storeAs('upload/', $request->file($fileKey)->getClientOriginalName());
         }
-        else {
+        elseif ($request->hasFile($fileKey)) {
             $data['img_path'] = "upload/{$request->file($fileKey)->getClientOriginalName()}";
         }
         unset($data[$fileKey]);

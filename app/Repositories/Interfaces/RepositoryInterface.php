@@ -11,5 +11,5 @@ interface RepositoryInterface
 {
     public function getAll(): ?LengthAwarePaginator;
     public function getById(string $id): Album|Performer|null;
-    public function getByPerformerName($name): Album|Performer|null;
+    public function getByName(string $name): Album|Performer|null;
 }

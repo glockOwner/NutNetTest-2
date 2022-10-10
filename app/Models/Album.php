@@ -9,5 +9,11 @@ class Album extends Model
 {
     use HasFactory;
 
-    protected $table = 'performers';
+    protected $table = 'albums';
+    protected $guarded = [];
+
+    public function performer()
+    {
+        return $this->belongsTo(Performer::class, 'performer_id', 'id');
+    }
 }

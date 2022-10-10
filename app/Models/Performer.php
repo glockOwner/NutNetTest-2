@@ -12,4 +12,9 @@ class Performer extends Model
 
     protected $table = 'performers';
     protected $guarded = [];
+
+    public function albums(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Album::class, 'id', 'performer_id');
+    }
 }
