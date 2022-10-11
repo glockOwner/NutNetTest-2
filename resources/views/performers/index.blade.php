@@ -1,5 +1,11 @@
 @extends('layouts.app')
 @section('content')
+    <div class="row-cols-12 align-self-center d-grid gap-1 mb-5">
+        <form action="" method="GET" class="d-flex flex-column justify-content-center">
+            <input class="form-control mr-2" type="search" placeholder="Поиск исполнителя" aria-label="Поиск исполнителя" name="name">
+            <button class="btn btn-outline-success mt-2" type="submit">Поиск</button>
+        </form>
+    </div>
     @can('view', auth()->user())
         <div class="row-cols-12 align-self-center d-grid gap-1 mb-3">
             <a href="{{route('performers.create')}}" class="btn btn-primary" type="button">Добавить исполнителя</a>
@@ -52,7 +58,7 @@
     @endif
     <div class="row d-flex justify-content-center align-self-center mt-5" style="align-self: end;">
         <div class="row">
-            {{$performers->links()}}
+            {{ $performers->withQueryString()->links() }}
         </div>
     </div>
 @endsection

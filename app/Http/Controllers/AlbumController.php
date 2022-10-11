@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\AlbumFilter;
+use App\Http\Filters\PerformerFilter;
 use App\Http\Requests\AlbumRequest;
+use App\Http\Requests\FilterRequest;
 use App\Models\Album;
 use App\Repositories\AlbumRepository;
 use App\Repositories\PerformerRepository;
 use App\Services\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class AlbumController extends Controller
 {
@@ -19,10 +23,13 @@ class AlbumController extends Controller
     }
 
 
-    public function index(AlbumRepository $repository): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
+    public function index(AlbumRepository $albumRepository, PerformerRepository $performerRepository, FilterRequest $request): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
     {
-        $albums = $repository->getAll();
-        return view('albums.index', compact('albums'));
+        $data = $request->validated();
+        $filter = App::makeWith(AlbumFilter::class, ['queryParams' => $data]);
+        $performers = $performerRepository->getAll();
+        $albums = $albumRepository->getWithFilter($filter);
+        return view('albums.index', compact('albums', 'performers'));
     }
 
     public function create(PerformerRepository $repository): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory

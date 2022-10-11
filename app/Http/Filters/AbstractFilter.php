@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 abstract class AbstractFilter implements FilterInterface
 {
     /** @var array */
-    private $queryParams = [];
+    private array $queryParams = [];
 
     /**
      * AbstractFilter constructor.
@@ -23,7 +23,7 @@ abstract class AbstractFilter implements FilterInterface
 
     abstract protected function getCallbacks(): array;
 
-    public function apply(Builder $builder)
+    public function apply(Builder $builder): void
     {
         $this->before($builder);
 
@@ -47,7 +47,7 @@ abstract class AbstractFilter implements FilterInterface
      *
      * @return mixed|null
      */
-    protected function getQueryParam(string $key, $default = null)
+    protected function getQueryParam(string $key, $default = null): ?string
     {
         return $this->queryParams[$key] ?? $default;
     }
@@ -57,7 +57,7 @@ abstract class AbstractFilter implements FilterInterface
      *
      * @return AbstractFilter
      */
-    protected function removeQueryParam(string ...$keys)
+    protected function removeQueryParam(string ...$keys): ?AbstractFilter
     {
         foreach ($keys as $key) {
             unset($this->queryParams[$key]);

@@ -13,7 +13,7 @@ class FilterRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,8 @@ class FilterRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'string',
+            'performer_id' => 'int',
         ];
     }
 }

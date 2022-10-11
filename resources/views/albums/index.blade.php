@@ -1,5 +1,16 @@
 @extends('layouts.app')
 @section('content')
+    <div class="row-cols-12 align-self-center d-grid gap-1 mb-5">
+        <form action="" method="GET" class="d-flex flex-column justify-content-center">
+            <label for="performerFilter" class="form-label">Фильтр по исполнителю</label>
+            <select class="form-select" aria-label="performerFilter" name="performer_id">
+                @foreach($performers as $performer)
+                    <option value="{{ $performer->id }}">{{ $performer->name }}</option>
+                @endforeach
+            </select>
+            <button type="submit" class="btn btn-primary mt-2">Фильтр</button>
+        </form>
+    </div>
     @can('view', auth()->user())
         <div class="row-cols-12 align-self-center d-grid gap-1 mb-3">
             <a href="{{ route('albums.create') }}" class="btn btn-primary" type="button">Добавить альбом</a>
@@ -56,7 +67,7 @@
     @endif
     <div class="row d-flex justify-content-center align-self-center mt-5" style="align-self: end;">
         <div class="row">
-            {{ $albums->links() }}
+            {{ $albums->withQueryString()->links() }}
         </div>
     </div>
 @endsection

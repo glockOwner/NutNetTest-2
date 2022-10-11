@@ -11,9 +11,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class PerformerRepository implements RepositoryInterface
 {
 
-    public function getAll(): ?LengthAwarePaginator
+    public function getAll(): \Illuminate\Database\Eloquent\Collection
     {
-        return Performer::paginate(5);
+        return Performer::all();
     }
 
     public function getById(string $id): Album|Performer|null
@@ -24,5 +24,10 @@ class PerformerRepository implements RepositoryInterface
     public function getByName(string $name): Album|Performer|null
     {
         return Performer::where('name', $name)->first();
+    }
+
+    public function getWithFilter($filter): ?LengthAwarePaginator
+    {
+        return Performer::filter($filter)->paginate(5);
     }
 }

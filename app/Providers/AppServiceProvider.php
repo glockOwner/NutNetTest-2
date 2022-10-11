@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use GuzzleHttp\Middleware;
+use Illuminate\Log\LogManager;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use Psr\Log\LoggerInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(LoggerInterface::class, LogManager::class);
     }
 
     /**

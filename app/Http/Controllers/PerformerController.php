@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\PerformerFilter;
+use App\Http\Requests\FilterRequest;
 use App\Http\Requests\PerformerRequest;
 use App\Models\Performer;
 use App\Repositories\PerformerRepository;
 use App\Services\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class PerformerController extends Controller
 {
@@ -17,9 +20,11 @@ class PerformerController extends Controller
         $this->service = $service;
     }
 
-    public function index(PerformerRepository $repository): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
+    public function index(PerformerRepository $repository, FilterRequest $request): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
     {
-        $performers = $repository->getAll();
+        $data = $request->validated();
+        $filter = App::makeWith(PerformerFilter::class, ['queryParams' => $data]);
+        $performers = $repository->getWithFilter($filter);
         return view('performers.index', compact('performers'));
     }
 
@@ -31,8 +36,8 @@ class PerformerController extends Controller
     public function store(PerformerRepository $repository, PerformerRequest $request): \Illuminate\Http\RedirectResponse
     {
         $data = $request->validated();
-        $fileKey = $data['photo'] ? 'photo' : '';
-        $performer = $repository->getByPerformerName($data['name']);
+        $fileKey = isset($data['photo']) ? 'photo' : '';
+        $performer = $repository->getByName($data['name']);
         if (empty($performer)) {
             $this->service->store($data, $request, $fileKey, Performer::class);
             return redirect()->route('performers.index')->with('success', 'Исполнитель успешно добавлен');
@@ -49,7 +54,7 @@ class PerformerController extends Controller
     public function update(PerformerRepository $repository, PerformerRequest $request, string $performerId): \Illuminate\Http\RedirectResponse
     {
         $data = $request->validated();
-        $fileKey = $data['photo'] ? 'photo' : '';
+        $fileKey = isset($data['photo']) ? 'photo' : '';
         $performer = $repository->getById($performerId);
         if (isset($performer)) {
             $this->service->update($data, $request, $fileKey, $performer);
