@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('performers', function (Blueprint $table) {
+        Schema::create('albums', function (Blueprint $table) {
             $table->id();
             $table->string('album_name');
             $table->unsignedBigInteger('performer_id');
             $table->text('description')->nullable();
             $table->string('img_path')->nullable();
+            $table->boolean('is_api');
             $table->timestamps();
         });
     }

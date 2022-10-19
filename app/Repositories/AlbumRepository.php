@@ -2,13 +2,22 @@
 
 namespace App\Repositories;
 
+use App\Components\LastFM;
 use App\Models\Album;
 use App\Models\Performer;
 use App\Repositories\Interfaces\RepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
+use LastFmApi\Exception\NoResultsException;
 
 class AlbumRepository implements RepositoryInterface
 {
+    private LastFM $lastFmApi;
+
+    public function __construct(LastFM $lastFmApi)
+    {
+        $this->lastFmApi = $lastFmApi;
+    }
+
 
     public function getAll(): \Illuminate\Database\Eloquent\Collection
     {
@@ -33,5 +42,14 @@ class AlbumRepository implements RepositoryInterface
     public function getWithFilter($filter): ?LengthAwarePaginator
     {
         return Album::filter($filter)->paginate(5);
+    }
+
+    public function getAlbumsFromApiByName(string $album): array|bool
+    {
+        try {
+            return $this->lastFmApi->searchAlbum($album)['results'];
+        } catch (NoResultsException $exception) {
+            return [];
+        }
     }
 }

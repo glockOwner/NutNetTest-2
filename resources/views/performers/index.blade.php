@@ -27,7 +27,7 @@
                 <tr>
                     <th scope="row">{{$performer->id}}</th>
                     <td>{{$performer->name}}</td>
-                    <td><img style="max-width: 200px; max-height: 100px;" class="card-img" src="{{isset($performer->img_path) ? asset('storage/' . $performer->img_path) : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3ycU5bXgAg5HX2jZduC39vQ0p9sCH8VwWLg&usqp=CAU'}}"></td>
+                    <td><img style="max-width: 200px; max-height: 100px;" class="card-img" src="@if(isset($performer->img_path) and $performer->is_api){{ $performer->img_path }}@elseif(isset($performer->img_path) and !$performer->is_api){{ asset('storage/' . $performer->img_path) }} @elseif(empty($performer->img_path)){{env('NO_IMAGE_URL')}}@endif"></td>
                     @can('view', auth()->user())
                         <td>
                             <a href="{{ route('performers.edit', $performer->id) }}" type="button" class="btn btn-secondary mr-4">Изменить</a>

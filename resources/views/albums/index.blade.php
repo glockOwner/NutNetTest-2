@@ -36,7 +36,7 @@
                 <td>{{$album->album_name}}</td>
                 <td>{{$album->performer->name}}</td>
                 <td width="600">{{$album->description}}</td>
-                <td><img style="max-width: 200px; max-height: 100px;" class="card-img" src="{{isset($album->img_path) ? asset('storage/' . $album->img_path) : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3ycU5bXgAg5HX2jZduC39vQ0p9sCH8VwWLg&usqp=CAU'}}"></td>
+                <td><img style="max-width: 200px; max-height: 100px;" class="card-img" src="@if(isset($album->img_path) and $album->is_api){{ $album->img_path }}@elseif(isset($album->img_path) and !$album->is_api){{ asset('storage/' . $album->img_path) }} @elseif(empty($album->img_path)){{env('NO_IMAGE_URL')}}@endif"></td>
                 @can('view', auth()->user())
                     <td class="d-flex flex-column">
                         <a href="{{ route('albums.edit', $album->id) }}" type="button" class="btn btn-secondary mt-2">Изменить</a>

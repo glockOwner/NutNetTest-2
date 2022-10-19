@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('img_path')->nullable();
+            $table->boolean('is_api')->default(false);
             $table->timestamps();
         });
     }

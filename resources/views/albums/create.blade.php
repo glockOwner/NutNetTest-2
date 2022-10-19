@@ -10,6 +10,13 @@
             @error('album_name')
             <p class="text-danger">{{$message}}</p>
             @enderror
+            @if(session('error'))
+                <div class="row-cols-9 align-self-center mt-5">
+                    <div class="alert alert-danger" role="alert">
+                        {{ session('error') }}
+                    </div>
+                </div>
+            @endif
         </div>
         <div class="row mb-3">
             <label for="performerSelect" class="form-label">Выбор исполнителя</label>
@@ -40,7 +47,7 @@
         </div>
         <button type="submit" class="btn btn-primary">Добавить альбом</button>
         <div class="col-sm-10 mt-5">
-            <input class="btn btn-primary" type="submit" formaction="" value="Предзаполнение полей по полю Название альбома">
+            <input class="btn btn-primary" type="submit" formaction="{{ route('albums.prefilling') }}" value="Предзаполнение полей по полю Название альбома">
         </div>
     </form>
 @endsection

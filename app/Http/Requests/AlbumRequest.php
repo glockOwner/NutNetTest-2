@@ -26,7 +26,7 @@ class AlbumRequest extends FormRequest
         return [
             'album_name' => 'required|string|max:125',
             'performer_id' => 'required|int',
-            'description' => 'required|string|max:500',
+            'description' => 'required|string|max:5000',
             'cover' => 'image',
         ];
     }

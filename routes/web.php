@@ -28,6 +28,8 @@ Route::group(['controller' => PerformerController::class, 'prefix' => '/performe
         Route::get('/edit/{performerId}', 'edit')->name('performers.edit');
         Route::patch('/update/{performerId}', 'update')->name('performers.update');
         Route::delete('/delete/{performerId}', 'delete')->name('performers.delete');
+        Route::post('/prefillingStore', 'storeWithPrefilling')->name('performers.prefillingStore');
+        Route::patch('/prefillingUpdate/{performerId}', 'updateWithPrefilling')->name('performers.prefillingUpdate');
     });
 });
 
@@ -39,5 +41,9 @@ Route::group(['controller' => AlbumController::class, 'prefix' => '/albums'], fu
         Route::get('/edit/{albumId}', 'edit')->name('albums.edit');
         Route::patch('/update/{albumId}', 'update')->name('albums.update');
         Route::delete('/delete/{albumId}', 'delete')->name('albums.delete');
+        Route::match(['post', 'patch'], '/prefilling/{albumId?}', 'prefilling')->name('albums.prefilling');
+        Route::post('/prefillingStore', 'storeWithPrefilling')->name('albums.prefillingStore');
+        Route::patch('/prefillingUpdate/{albumId}', 'updateWithPrefilling')->name('albums.prefillingUpdate');
+
     });
 });

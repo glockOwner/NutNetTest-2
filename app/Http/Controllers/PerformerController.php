@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\LastFM;
 use App\Http\Filters\PerformerFilter;
 use App\Http\Requests\FilterRequest;
 use App\Http\Requests\PerformerRequest;
 use App\Models\Performer;
 use App\Repositories\PerformerRepository;
 use App\Services\Service;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use LastFmApi\Api\ArtistApi;
 
 class PerformerController extends Controller
 {
@@ -45,6 +48,19 @@ class PerformerController extends Controller
         return redirect()->route('performers.index')->with('error', 'Ошибка добавления исполнителя');
     }
 
+    public function storeWithPrefilling(PerformerRequest $request, PerformerRepository $repository): \Illuminate\Http\RedirectResponse
+    {
+        $data = $request->validated();
+        $performer = $repository->getByName($data['name']);
+        if (empty($performer)) {
+            if (!$this->service->storeArtistWithPrefilling($data)) {
+                return redirect()->route('performers.create')->with('error', 'Такого исполнителя не было найдено');
+            }
+            return redirect()->route('performers.index')->with('success', 'Исполнитель добавлен успешно');
+        }
+        return redirect()->route('performers.index')->with('error', 'Ошибка добавления исполнителя');
+    }
+
     public function edit(PerformerRepository $repository, string $performerId): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
     {
         $performer = $repository->getById($performerId);
@@ -59,6 +75,19 @@ class PerformerController extends Controller
         if (isset($performer)) {
             $this->service->update($data, $request, $fileKey, $performer);
             return redirect()->route('performers.index')->with('success', 'Информация об исполнтеле успешно обновлена');
+        }
+        return redirect()->route('performers.index')->with('error', 'Ошибка обновления информации об исполнителе');
+    }
+
+    public function updateWithPrefilling(PerformerRequest $request, PerformerRepository $repository, string $performerId): \Illuminate\Http\RedirectResponse
+    {
+        $data = $request->validated();
+        $performer = $repository->getById($performerId);
+        if (isset($performer)) {
+            if (!$this->service->updateArtistWithPrefilling($data, $performer)) {
+                return redirect()->route('performers.edit')->with('error', 'Такого исполнителя не было найдено');
+            }
+            return redirect()->route('performers.index')->with('success', 'Информация об исполнителе успешно обновлена');
         }
         return redirect()->route('performers.index')->with('error', 'Ошибка обновления информации об исполнителе');
     }
